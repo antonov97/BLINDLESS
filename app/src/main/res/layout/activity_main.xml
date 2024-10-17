@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="#E91E63"
+        android:columnCount="3"
+        android:rowCount="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Menú Principal"
+            android:textSize="30sp"
+            android:layout_columnSpan="3" />
+
+        <ImageButton
+            android:id="@+id/ibGeolocalizacion"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="150sp"
+            android:layout_marginRight="20sp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_dialog_map" />
+
+        <ImageButton
+            android:id="@+id/ibContactos"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="150sp"
+            android:layout_marginRight="20sp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_input_get" />
+
+        <ImageButton
+            android:id="@+id/ibNumeroemergencia"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="150sp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_menu_call" />
+
+        <ImageButton
+            android:id="@+id/ibQr"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_menu_camera" />
+
+        <ImageButton
+            android:id="@+id/ibBuscador"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_menu_search" />
+
+        <ImageButton
+            android:id="@+id/ibCompartirubicacion"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_menu_share" />
+
+        <ImageButton
+            android:id="@+id/ibNFC"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_menu_view" />
+
+        <ImageButton
+            android:id="@+id/ibPanico"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/radiobutton_on_background" />
+
+        <ImageButton
+            android:id="@+id/ibAyuda"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/button_border"
+            app:srcCompat="@android:drawable/ic_menu_help" />
+
+    </GridLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
