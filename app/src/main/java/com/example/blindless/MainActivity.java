@@ -25,6 +25,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 String textoALeer = "Apretaste el botón para obtener tu ubicación. Si deseas saber dónde estás, vuelve a apretar el botón.";
                 speakOut(textoALeer);
                 bandera[0] = 1;
-                resetBanderaAfterDelay(0);
+                resetBanderaAfterDelay(5);
             } else {
                 obtenerUbicacionPrecisa();
                 bandera[0] = 0;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 String textoALeer = "Apretaste el botón para abrir tus contactos. Si deseas continuar, vuelve a apretar el botón.";
                 speakOut(textoALeer);
                 bandera[1] = 1;
-                resetBanderaAfterDelay(1);
+                resetBanderaAfterDelay(5);
             } else {
                 Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
                 startActivity(intent);
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 String textoALeer = "Apretaste el botón para realizar una llamada de emergencia. Si deseas continuar, vuelve a apretar el botón.";
                 speakOut(textoALeer);
                 bandera[2] = 1;
-                resetBanderaAfterDelay(2);
+                resetBanderaAfterDelay(5);
             } else {
                 try {
                     makePhoneCall();
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 String textoALeer = "Apretaste el botón para compartir tu ubicación. Si deseas continuar, vuelve a apretar el botón.";
                 speakOut(textoALeer);
                 bandera[3] = 1;
-                resetBanderaAfterDelay(3);
+                resetBanderaAfterDelay(5);
             } else {
                 obtenerUbicacionParaCompartir();
                 bandera[3] = 0;
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                         if (location != null) {
                             obtenerDireccion(location);
                         } else {
-                            String textoALeer = "No se pudo obtener la ubicación.";
+                            String textoALeer = "No se pudo obtener la ubicación, por favor, verifica que tienes activado el GPS, y cierra y abre la aplicación nuevamente.";
                             speakOut(textoALeer);
                         }
                     });
@@ -161,12 +162,39 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                             shareIntent.setType("text/plain");
                             startActivity(Intent.createChooser(shareIntent, "Compartir ubicación"));
                         } else {
-                            String textoALeer = "No se pudo obtener la ubicación para compartir.";
+                            String textoALeer = "No se pudo obtener la ubicación, por favor, verifica que tienes activado el GPS, y cierra y abre la aplicación nuevamente.";
                             speakOut(textoALeer);
                         }
                     });
         }
     }
+    // Método para recibir el resultado del escaneo
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (result.getContents() != null) {
+                String qrContent = result.getContents();
+                try {
+                    JSONObject json = new JSONObject(qrContent);
+                    String descripcion = json.getString("descripcion");
+                    String fechadeCaducidad = json.getString("fechadeCaducidad");
+                    Toast.makeText(this, "Se ha escaneado un producto. La descripción del producto es: " + descripcion + ", y la fecha de expiración es: " + fechadeCaducidad, Toast.LENGTH_LONG).show();
+                    String textoALeer = "Se ha escaneado un producto. La descripción del producto es: " + descripcion + ", y la fecha de expiración es: " + fechadeCaducidad;
+                    speakOut(textoALeer);
+                } catch (JSONException e) {
+                    Toast.makeText(this, "QR no contiene un formato JSON válido", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(this, "No se encontró contenido en el QR", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
 
     // Método para obtener la dirección a partir de la ubicación
     private void obtenerDireccion(Location location) {
@@ -200,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             String textoALeer = "Apretaste el botón de escanear código QR. Si deseas escanear el producto, vuelve a apretar el botón.";
             speakOut(textoALeer);
             bandera[4] = 1;
-            resetBanderaAfterDelay(4);
+            resetBanderaAfterDelay(5);
         } else {
             String textoALeer = "Se abrió la cámara para escanear el código QR. Acerca la cámara al código QR del producto.";
             speakOut(textoALeer);
@@ -215,15 +243,17 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     // Método para realizar una llamada
     private void makePhoneCall() throws InterruptedException {
-        String numeroEmergencia = "911"; // Aquí puedes cambiar el número de emergencia
+        String phoneNumber = "088"; // Número de emergencia
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL_PERMISSION);
         } else {
-            Intent intent = new Intent(Intent.ACTION_CALL);
-            intent.setData(Uri.parse("tel:" + numeroEmergencia));
-            startActivity(intent);
+            String textoALeer = "Se está llamando a emergencias.";
+            speakOut(textoALeer);
+            sleep(1800);
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber)));
         }
     }
+
 
     // Método para hablar
     private void speakOut(String texto) {
